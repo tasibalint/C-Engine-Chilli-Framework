@@ -27,7 +27,8 @@ Game::Game(MainWindow& wnd)
     gfx(wnd)
 {
     box = Box{};
-    player = Player{};
+    player = Player{ 300,300,50,50,Colors::Blue,2 };
+    field = Field{};
 }
 
 void Game::Go()
@@ -46,7 +47,7 @@ void Game::UpdateModel()
         }
     }
     if (wnd.kbd.KeyIsPressed(VK_DOWN)) {
-        if ((player.coords.y + player.sizeY + player.speed) < gfx.ScreenHeight) {
+        if ((player.coords.y + player.height + player.speed) < gfx.ScreenHeight) {
             player.coords.y += player.speed;
         }
     }
@@ -56,7 +57,7 @@ void Game::UpdateModel()
         }
     }
     if (wnd.kbd.KeyIsPressed(VK_RIGHT)) {
-        if ((player.coords.x + player.sizeX + player.speed) < gfx.ScreenWidth) {
+        if ((player.coords.x + player.length + player.speed) < gfx.ScreenWidth) {
             player.coords.x += player.speed;
         }
     }
@@ -71,34 +72,34 @@ void Game::UpdateModel()
 
 bool Game::checkForOverlap()
 {
-    for (int px = player.coords.x; px < player.coords.x +player.sizeX; ++px) {
-        for (int py = player.coords.y; py < player.coords.y +player.sizeY; ++py) {
-            for (int bx = box.coords.x; bx < box.coords.x + box.length; ++bx) {
-                for (int by = box.coords.y; by < box.coords.y + box.length; ++by) {
-                    if (px == bx && py == by)
-                        return true;
-                }
-            }
+    if ((player.coords.x <= box.coords.x + box.length)
+     && (player.coords.x + player.length >= box.coords.x)
+     && (player.coords.y <= box.coords.y + box.height)
+     && (player.coords.y + player.height >= box.coords.y))
+        return true;
+    return false;
+}
+
+void Game::DrawElement(Element element)
+{
+    int xPos, yPos;
+    for (int i = 0; i < element.length; ++i) {
+        for (int j = 0; j < element.height; ++j) {
+            xPos = element.coords.x + i;
+            yPos = element.coords.y + j;
+            if (xPos < gfx.ScreenWidth && xPos > 0
+                && yPos < gfx.ScreenHeight && yPos > 0)
+                gfx.PutPixel(xPos, yPos, element.color);
         }
     }
-    return false;
 }
 
 void Game::ComposeFrame()
 {
         //Player
-        int xPos, yPos;
-        for (int i = 0; i < player.sizeX; ++i) {
-            for (int j = 0; j < player.sizeY; ++j) {
-                xPos = player.coords.x + i;
-                yPos = player.coords.y + j;
-                if (xPos < gfx.ScreenWidth  && xPos > 0
-                 && yPos < gfx.ScreenHeight && yPos > 0)
-                    gfx.PutPixel(xPos, yPos, player.color);
-            }
-        }
-
+        DrawElement((Element)player);
         //Box
+        int xPos, yPos;
         for (int i = 0; i < box.length; ++i) {
             for (int j = 0; j < box.length; ++j) {
                 xPos = box.coords.x + i;

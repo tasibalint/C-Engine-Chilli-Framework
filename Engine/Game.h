@@ -27,18 +27,6 @@
 
 class Game
 {
-public:
-	Game( class MainWindow& wnd );
-	Game( const Game& ) = delete;
-	Game& operator=( const Game& ) = delete;
-	void Go();
-private:
-	void ComposeFrame();
-	void UpdateModel();
-    bool checkForOverlap();
-	/********************************/
-	/*  User Functions              */
-	/********************************/
 private:
 	MainWindow& wnd;
 	Graphics gfx;
@@ -47,27 +35,60 @@ private:
         int y;
         Coords(int x, int y) : x(x), y(y) {}
     };
-    //Player
-    struct Player {
-        int speed;
-        int sizeX;
-        int sizeY;
-        Coords coords ;
+    struct Element {
+        Coords coords;
+        int length;
+        int height;
         Color color;
-        Player(): speed(2), sizeX(50), sizeY(50), coords(Coords{400, 300}), color(Colors::Blue) {}
+        Element() : length(0), height(0), coords(Coords(0,0)), color(Colors::White) {};
+        //Element(int x, int y, int length, int height, Color color) : coords(Coords{ x,y }), length(length), height(height), color(color) {};
     };
+    //Player
+    struct Player : Element {
+        int speed;
+        Player(int x, int y, int l, int h, Color c, int speed) : speed(speed) { 
+            coords.x = x;
+            coords.y = y;
+            length = l;
+            height = h;
+            color = c;
+        };
+        Player() : speed(2) {
+            coords.x = 0;
+            coords.y = 0;
+            length = 10;
+            height = 10;
+            color = Colors::White;
+        }
+    };
+
     Player player;
+    //Field
+    struct Field {
+        Coords coords;
+        int length;
+        int height;
+        Color color;
+        Field() : coords(Coords{ 0,0 }), length(600), height(800), color(Colors::Cyan) {};
+    };
+    Field field;
     //Box
     struct Box {
         int length;
+        int height;
         Coords coords;
         Color color;
-        Box() : length(50), coords(Coords{200,200}), color(Colors::Green) {};
+        Box() : length(50), height(50), coords(Coords{200,200}), color(Colors::Green) {};
     };
     Box box;
-
-    int gb = 255;
-	/********************************/
-	/*  User Variables              */
-	/********************************/
+public:
+    Game(class MainWindow& wnd);
+    Game(const Game&) = delete;
+    Game& operator=(const Game&) = delete;
+    void Go();
+private:
+    void ComposeFrame();
+    void UpdateModel();
+    bool checkForOverlap();
+    void DrawElement(Element element);
 };
