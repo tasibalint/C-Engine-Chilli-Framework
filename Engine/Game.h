@@ -41,7 +41,6 @@ private:
         int height;
         Color color;
         Element() : length(0), height(0), coords(Coords(0,0)), color(Colors::White) {};
-        //Element(int x, int y, int length, int height, Color color) : coords(Coords{ x,y }), length(length), height(height), color(color) {};
     };
     //Player
     struct Player : Element {
@@ -63,22 +62,22 @@ private:
     };
 
     Player player;
-    //Field
-    struct Field {
-        Coords coords;
-        int length;
-        int height;
-        Color color;
-        Field() : coords(Coords{ 0,0 }), length(600), height(800), color(Colors::Cyan) {};
-    };
-    Field field;
     //Box
-    struct Box {
-        int length;
-        int height;
-        Coords coords;
-        Color color;
-        Box() : length(50), height(50), coords(Coords{200,200}), color(Colors::Green) {};
+    struct Box : Element {
+        Box(int x, int y, int l, int h, Color c) {
+            coords.x = x;
+            coords.y = y;
+            length = l;
+            height = h;
+            color = c;
+        };
+        Box() {
+            coords.x = 0;
+            coords.y = 0;
+            length = 10;
+            height = 10;
+            color = Colors::White;
+        };
     };
     Box box;
 public:

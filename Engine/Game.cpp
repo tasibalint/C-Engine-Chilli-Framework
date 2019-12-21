@@ -26,9 +26,8 @@ Game::Game(MainWindow& wnd)
     wnd(wnd),
     gfx(wnd)
 {
-    box = Box{};
-    player = Player{ 300,300,50,50,Colors::Blue,2 };
-    field = Field{};
+    box = Box{ 0, 0, gfx.ScreenWidth, 100, Colors::Cyan };
+    player = Player{ 300, 300, 50, 50, Colors::Blue, 2 };
 }
 
 void Game::Go()
@@ -68,6 +67,9 @@ void Game::UpdateModel()
     else {
         box.color = Colors::Green;
     }
+
+    //Box
+    DrawElement((Element)box);
 }
 
 bool Game::checkForOverlap()
@@ -98,16 +100,5 @@ void Game::ComposeFrame()
 {
         //Player
         DrawElement((Element)player);
-        //Box
-        int xPos, yPos;
-        for (int i = 0; i < box.length; ++i) {
-            for (int j = 0; j < box.length; ++j) {
-                xPos = box.coords.x + i;
-                yPos = box.coords.y + j;
-                if (xPos < gfx.ScreenWidth && xPos > 0
-                    && yPos < gfx.ScreenHeight && yPos > 0)
-                    gfx.PutPixel(xPos, yPos, box.color);
-            }
-        }
 }
 
